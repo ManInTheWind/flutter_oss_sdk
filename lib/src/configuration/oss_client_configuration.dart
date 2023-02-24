@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+part of flutter_oss_sdk;
 
 @immutable
 class OSSClientConfiguration {

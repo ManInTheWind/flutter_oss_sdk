@@ -1,7 +1,4 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-
-import 'flutter_oss_sdk_platform_interface.dart';
+part of flutter_oss_sdk;
 
 /// An implementation of [FlutterOssSdkPlatform] that uses method channels.
 class MethodChannelFlutterOssSdk extends FlutterOssSdkPlatform {
@@ -11,7 +8,8 @@ class MethodChannelFlutterOssSdk extends FlutterOssSdkPlatform {
 
   @override
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version =
+        await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
   }
 }

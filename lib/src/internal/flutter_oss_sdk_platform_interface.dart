@@ -1,6 +1,4 @@
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import 'flutter_oss_sdk_method_channel.dart';
+part of flutter_oss_sdk;
 
 abstract class FlutterOssSdkPlatform extends PlatformInterface {
   /// Constructs a FlutterOssSdkPlatform.

@@ -1,3 +1,5 @@
+part of flutter_oss_sdk;
+
 abstract class OssUploadResponseModel {
   final String path;
 
