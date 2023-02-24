@@ -1,0 +1,49 @@
+PODS:
+  - AliyunOSSiOS (2.10.16)
+  - Flutter (1.0.0)
+  - flutter_oss_sdk (0.0.1):
+    - AliyunOSSiOS
+    - Flutter
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - photo_manager (2.0.0):
+    - Flutter
+    - FlutterMacOS
+  - video_player_avfoundation (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_oss_sdk (from `.symlinks/plugins/flutter_oss_sdk/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
+
+SPEC REPOS:
+  trunk:
+    - AliyunOSSiOS
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_oss_sdk:
+    :path: ".symlinks/plugins/flutter_oss_sdk/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/ios"
+  photo_manager:
+    :path: ".symlinks/plugins/photo_manager/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/ios"
+
+SPEC CHECKSUMS:
+  AliyunOSSiOS: d624effdd24535da414a2bacf0027bedf64cc90e
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_oss_sdk: 3203e2bedc2e26227b5ed4c1df63ac450816e792
+  path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
+  photo_manager: 4f6810b7dfc4feb03b461ac1a70dacf91fba7604
+  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
+
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+
+COCOAPODS: 1.11.3
