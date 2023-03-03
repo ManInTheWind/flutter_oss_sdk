@@ -118,90 +118,100 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
         // 构造上传请求。
         // 依次填写Bucket名称（例如examplebucket）、Object完整路径（例如exampledir/exampleobject.txt）和本地文件完整路径（例如/storage/emulated/0/oss/examplefile.txt）。
         // Object完整路径中不能包含Bucket名称。
-        PutObjectRequest put = new PutObjectRequest(uploadModel.getBucketName(), uploadModel.getObjectKey(), uploadModel.getUploadFilePath());
+        try {
+            PutObjectRequest put = new PutObjectRequest(uploadModel.getBucketName(), uploadModel.getObjectKey(), uploadModel.getUploadFilePath());
 
-        // 异步上传时可以设置进度回调。
-        put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
-            @Override
-            public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
-                listener.uploadProgress(new FlutterOssUploadResponseProcessModel(request.getUploadFilePath(), currentSize, totalSize));
-            }
-        });
-
-        if (!containNull(uploadModel.getCallbackUrl(), uploadModel.getCallbackBody())) {
-            ///上传回调
-            put.setCallbackParam(new HashMap<String, String>() {
-                {
-                    put("callbackUrl", uploadModel.getCallbackUrl());
-                    if (uploadModel.getCallbackHost() != null) {
-                        put("callbackHost", uploadModel.getCallbackHost());
-                    }
-                    if (uploadModel.getCallbackBodyType() != null) {
-                        put("callbackBodyType", uploadModel.getCallbackBodyType());
-                    }
-                    put("callbackBody", uploadModel.getCallbackBody());
+            // 异步上传时可以设置进度回调。
+            put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
+                @Override
+                public void onProgress(PutObjectRequest request, long currentSize, long totalSize) {
+                    listener.uploadProgress(new FlutterOssUploadResponseProcessModel(request.getUploadFilePath(), currentSize, totalSize));
                 }
             });
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Optional.ofNullable(uploadModel.getCallbackVars()).ifPresent(put::setCallbackVars);
-            } else {
-                if (uploadModel.getCallbackVars() != null) {
-                    put.setCallbackVars(uploadModel.getCallbackVars());
+
+            if (!containNull(uploadModel.getCallbackUrl(), uploadModel.getCallbackBody())) {
+                ///上传回调
+                put.setCallbackParam(new HashMap<String, String>() {
+                    {
+                        put("callbackUrl", uploadModel.getCallbackUrl());
+                        if (uploadModel.getCallbackHost() != null) {
+                            put("callbackHost", uploadModel.getCallbackHost());
+                        }
+                        if (uploadModel.getCallbackBodyType() != null) {
+                            put("callbackBodyType", uploadModel.getCallbackBodyType());
+                        }
+                        put("callbackBody", uploadModel.getCallbackBody());
+                    }
+                });
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Optional.ofNullable(uploadModel.getCallbackVars()).ifPresent(put::setCallbackVars);
+                } else {
+                    if (uploadModel.getCallbackVars() != null) {
+                        put.setCallbackVars(uploadModel.getCallbackVars());
+                    }
                 }
             }
+
+            OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+                @Override
+                public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+
+                    String domain;
+
+                    if (uploadModel.getCustomDomain() != null) {
+                        domain = uploadModel.getCustomDomain();
+                    } else {
+                        domain = uploadModel.getBucketName() + "." + mOSSEndPoint;
+                    }
+
+                    String ossFileUrl = "https://" +
+                            domain +
+                            "/" +
+                            uploadModel.getObjectKey();
+
+                    listener.uploadSuccess(new FlutterOssUploadResponseSuccessModel(request.getUploadFilePath(), ossFileUrl, result.getServerCallbackReturnBody()));
+
+                    uploadModelList.remove(0);
+
+                    if (!uploadModelList.isEmpty()) {
+                        pubObjectAsync(uploadModelList, listener);
+                    }
+                }
+
+                @Override
+                public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                    // 请求异常。
+                    if (clientExcepion != null) {
+                        // 客户端异常，例如网络异常等。
+                        clientExcepion.printStackTrace();
+                        FlutterOssUploadResponseFailureModel failureModel = new FlutterOssUploadResponseFailureModel.Builder().setErrorCode(FLUTTER_ERROR_CODE).setErrorMessage("上传失败:客户端异常").build();
+                        listener.uploadFailed(failureModel);
+                    }
+                    if (serviceException != null) {
+                        FlutterOssUploadResponseFailureModel failureModel = new FlutterOssUploadResponseFailureModel.Builder()
+                                .setErrorCode(serviceException.getErrorCode())
+                                .setRequestId(serviceException.getRequestId())
+                                .setHostId(serviceException.getHostId())
+                                .setErrorMessage(serviceException.getRawMessage())
+                                .build();
+                        listener.uploadFailed(failureModel);
+                        // 服务端异常。
+                        Log.e("ErrorCode", serviceException.getErrorCode());
+                        Log.e("RequestId", serviceException.getRequestId());
+                        Log.e("HostId", serviceException.getHostId());
+                        Log.e("RawMessage", serviceException.getRawMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            FlutterOssUploadResponseFailureModel failureModel = new FlutterOssUploadResponseFailureModel.Builder()
+                    .setErrorCode(FLUTTER_ERROR_CODE)
+                    .setErrorMessage(e.getMessage())
+                    .build();
+            listener.uploadFailed(failureModel);
+            return;
         }
 
-        OSSAsyncTask<PutObjectResult> task = oss.asyncPutObject(put, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
-            @Override
-            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
-
-                String domain;
-
-                if (uploadModel.getCustomDomain() != null) {
-                    domain = uploadModel.getCustomDomain();
-                } else {
-                    domain = uploadModel.getBucketName() + "." + mOSSEndPoint;
-                }
-
-                String ossFileUrl = "https://" +
-                        domain +
-                        "/" +
-                        uploadModel.getObjectKey();
-
-                listener.uploadSuccess(new FlutterOssUploadResponseSuccessModel(request.getUploadFilePath(), ossFileUrl, result.getServerCallbackReturnBody()));
-
-                uploadModelList.remove(0);
-
-                if (!uploadModelList.isEmpty()) {
-                    pubObjectAsync(uploadModelList, listener);
-                }
-            }
-
-            @Override
-            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
-                // 请求异常。
-                if (clientExcepion != null) {
-                    // 客户端异常，例如网络异常等。
-                    clientExcepion.printStackTrace();
-                    FlutterOssUploadResponseFailureModel failureModel = new FlutterOssUploadResponseFailureModel.Builder().setErrorCode(FLUTTER_ERROR_CODE).setErrorMessage("上传失败:客户端异常").build();
-                    listener.uploadFailed(failureModel);
-                }
-                if (serviceException != null) {
-                    FlutterOssUploadResponseFailureModel failureModel = new FlutterOssUploadResponseFailureModel.Builder()
-                            .setErrorCode(serviceException.getErrorCode())
-                            .setRequestId(serviceException.getRequestId())
-                            .setHostId(serviceException.getHostId())
-                            .setErrorMessage(serviceException.getRawMessage())
-                            .build();
-                    listener.uploadFailed(failureModel);
-                    // 服务端异常。
-                    Log.e("ErrorCode", serviceException.getErrorCode());
-                    Log.e("RequestId", serviceException.getRequestId());
-                    Log.e("HostId", serviceException.getHostId());
-                    Log.e("RawMessage", serviceException.getRawMessage());
-                }
-            }
-        });
         // 取消上传任务。
         // task.cancel();
         // 等待上传任务完成。

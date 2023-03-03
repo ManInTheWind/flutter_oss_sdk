@@ -29,7 +29,7 @@ class OSSUploadModel {
   ///回调的POST请求体参数
   final Map<String, String?>? callbackVars;
 
-  const OSSUploadModel({
+  OSSUploadModel({
     required this.bucketName,
     required this.objectKey,
     required this.uploadFilePath,
@@ -39,7 +39,9 @@ class OSSUploadModel {
     this.callbackBodyType,
     this.callbackBody,
     this.callbackVars,
-  });
+  })  : assert(bucketName.isNotEmpty, 'Bucket不能为空'),
+        assert(objectKey.isNotEmpty, 'ObjectKey不能为空'),
+        assert(uploadFilePath.isNotEmpty, '上传路径不能为空');
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

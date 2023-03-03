@@ -140,7 +140,8 @@ public class FlutterOssSdkPlugin implements FlutterPlugin, MethodCallHandler {
             return;
         }
 
-        new Thread(() -> {
+
+        Thread thread = new Thread(() -> {
             flutterOSSClient.pubObjectAsync(uploadModels, new FlutterOSSUploadListener() {
                 @Override
                 public void uploadProgress(FlutterOssUploadResponseProcessModel processModel) {
@@ -157,8 +158,8 @@ public class FlutterOssSdkPlugin implements FlutterPlugin, MethodCallHandler {
                     new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onFailure", failureModel.toJson()));
                 }
             });
-        }).start();
-
+        });
+        thread.start();
         result.success(true);
     }
 
