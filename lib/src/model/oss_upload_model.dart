@@ -29,6 +29,9 @@ class OSSUploadModel {
   ///回调的POST请求体参数
   final Map<String, String?>? callbackVars;
 
+  ///content-type
+  final String? contentType;
+
   OSSUploadModel({
     required this.bucketName,
     required this.objectKey,
@@ -39,6 +42,7 @@ class OSSUploadModel {
     this.callbackBodyType,
     this.callbackBody,
     this.callbackVars,
+    this.contentType,
   })  : assert(bucketName.isNotEmpty, 'Bucket不能为空'),
         assert(objectKey.isNotEmpty, 'ObjectKey不能为空'),
         assert(uploadFilePath.isNotEmpty, '上传路径不能为空');
@@ -54,6 +58,7 @@ class OSSUploadModel {
       'callbackBodyType': callbackBodyType,
       'callbackBody': callbackBody,
       'callbackVars': callbackVars,
-    };
+      'contentType': contentType,
+    }..removeWhere((key, value) => value == null);
   }
 }

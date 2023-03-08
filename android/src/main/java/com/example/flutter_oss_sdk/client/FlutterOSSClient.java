@@ -76,7 +76,10 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
         // Object完整路径中不能包含Bucket名称。
         PutObjectRequest put = new PutObjectRequest(uploadModel.getBucketName(), uploadModel.getObjectKey(), uploadModel.getUploadFilePath());
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("application/octet-stream"); // 设置content-type。
+        if (uploadModel.getContentType() != null) {
+            metadata.setContentType(uploadModel.getContentType());
+        }
+//        metadata.setContentType("application/octet-stream"); // 设置content-type。
         put.setMetadata(metadata);
         try {
             PutObjectResult putResult = oss.putObject(put);
@@ -120,7 +123,11 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
         // Object完整路径中不能包含Bucket名称。
         try {
             PutObjectRequest put = new PutObjectRequest(uploadModel.getBucketName(), uploadModel.getObjectKey(), uploadModel.getUploadFilePath());
-
+            ObjectMetadata metadata = new ObjectMetadata();
+            if (uploadModel.getContentType() != null) {
+                metadata.setContentType(uploadModel.getContentType());
+            }
+            put.setMetadata(metadata);
             // 异步上传时可以设置进度回调。
             put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
                 @Override

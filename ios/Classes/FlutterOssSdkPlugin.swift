@@ -92,6 +92,10 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         
         putRequest.objectKey = uploadModel.objectKey
         
+        if let contentType = uploadModel.contentType{
+            putRequest.contentType = contentType
+        }
+        
         putRequest.uploadingFileURL = URL(fileURLWithPath: uploadModel.uploadFilePath)
         
         let putTask = _ossClient?.putObject(putRequest)
@@ -102,6 +106,7 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         }
         
         putTask!.continue ({ task -> Any? in
+            print("contentType:\(putRequest.contentType)")
             if task.error != nil {
                 let errors = task.error! as NSError
                
@@ -120,6 +125,7 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
             }
             return nil
         }).waitUntilFinished()
+       
     }
     
     //MARK: - 异步上传单个/多个文件
@@ -184,8 +190,12 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         
         putRequest.uploadingFileURL = URL(fileURLWithPath: uploadModel.uploadFilePath)
         
+        if let contentType = uploadModel.contentType{
+            putRequest.contentType = contentType
+        }
+        
         if let callbackUrl = uploadModel.callbackUrl{
-            print("callbackUrl:\(callbackUrl)")
+            
             putRequest.callbackParam = ["callbackUrl": callbackUrl]
  
             if let callbackBody = uploadModel.callbackBody {
@@ -206,6 +216,7 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         
         
         
+        
         putRequest.uploadProgress = { bytesSent, totalByteSent, totalBytesExpectedToSend in
             // 指定当前上传长度、当前已经上传总长度、待上传的总长度。
             print("bytesSent: \(bytesSent),totalByteSent: \(totalByteSent),totalBytesExpectedToSend: \(totalBytesExpectedToSend)")
@@ -216,6 +227,8 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
             )
             self.methodChannel?.invokeMethod(FlutterOssSdkPlugin.FLUTTER_METHOD_PROCESS, arguments: processModel.toJson())
         }
+        
+       
         
         let putTask = _ossClient!.putObject(putRequest)
         

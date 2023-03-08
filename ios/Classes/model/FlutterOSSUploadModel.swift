@@ -11,6 +11,7 @@ struct FlutterOSSUploadModel {
     var bucketName: String
     var objectKey: String
     var uploadFilePath: String
+    var contentType: String?
 
     /**
      * 自定义域名
@@ -27,6 +28,7 @@ struct FlutterOSSUploadModel {
         bucketName =  arguments["bucketName"] as? String ?? ""
         objectKey =  arguments["objectKey"] as? String ?? ""
         uploadFilePath =  arguments["uploadFilePath"] as? String ?? ""
+        contentType = arguments["contentType"] as? String;
         customDomain =  arguments["customDomain"] as? String
         callbackUrl =  arguments["callbackUrl"] as? String
         callbackHost =  arguments["callbackHost"] as? String

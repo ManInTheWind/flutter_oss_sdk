@@ -18,6 +18,8 @@ public class FlutterOSSUploadModel {
     private String callbackBody;
     private Map<String, String> callbackVars;
 
+    private String contentType;
+
     public void setBucketName(String bucketName) {
         this.bucketName = bucketName;
     }
@@ -88,5 +90,13 @@ public class FlutterOSSUploadModel {
 
     public void setCustomDomain(String customDomain) {
         this.customDomain = customDomain;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }
