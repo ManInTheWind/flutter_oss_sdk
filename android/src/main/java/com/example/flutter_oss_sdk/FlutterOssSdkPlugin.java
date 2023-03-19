@@ -139,27 +139,22 @@ public class FlutterOssSdkPlugin implements FlutterPlugin, MethodCallHandler {
             result.error(FLUTTER_ERROR_CODE, e.getMessage(), e.getStackTrace());
             return;
         }
+        flutterOSSClient.pubObjectAsync(uploadModels, new FlutterOSSUploadListener() {
+            @Override
+            public void uploadProgress(FlutterOssUploadResponseProcessModel processModel) {
+                new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onProgress", processModel.toJson()));
+            }
 
+            @Override
+            public void uploadSuccess(FlutterOssUploadResponseSuccessModel successModel) {
+                new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onSuccess", successModel.toJson()));
+            }
 
-        Thread thread = new Thread(() -> {
-            flutterOSSClient.pubObjectAsync(uploadModels, new FlutterOSSUploadListener() {
-                @Override
-                public void uploadProgress(FlutterOssUploadResponseProcessModel processModel) {
-                    new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onProgress", processModel.toJson()));
-                }
-
-                @Override
-                public void uploadSuccess(FlutterOssUploadResponseSuccessModel successModel) {
-                    new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onSuccess", successModel.toJson()));
-                }
-
-                @Override
-                public void uploadFailed(FlutterOssUploadResponseFailureModel failureModel) {
-                    new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onFailure", failureModel.toJson()));
-                }
-            });
+            @Override
+            public void uploadFailed(FlutterOssUploadResponseFailureModel failureModel) {
+                new Handler(Looper.getMainLooper()).post(() -> channel.invokeMethod("onFailure", failureModel.toJson()));
+            }
         });
-        thread.start();
         result.success(true);
     }
 

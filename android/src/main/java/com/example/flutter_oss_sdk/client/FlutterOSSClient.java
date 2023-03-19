@@ -216,7 +216,6 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
                     .setErrorMessage(e.getMessage())
                     .build();
             listener.uploadFailed(failureModel);
-            return;
         }
 
         // 取消上传任务。
