@@ -33,7 +33,7 @@ class OSSClientConfiguration {
   const OSSClientConfiguration({
     required this.ossStsUrl,
     required this.bucketEndPoint,
-    this.httpDnsEnable = false,
+    this.httpDnsEnable = true,
     this.userAgentMark,
     this.connectionTimeout = 15 * 1000,
     this.socketTimeout = 15 * 1000,

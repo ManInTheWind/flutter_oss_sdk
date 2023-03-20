@@ -51,13 +51,26 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
     public void init(Context context, FlutterOSSClientConfiguration flutterOssConfiguration, MethodChannel.Result result) {
         mSTSAuthUrl = flutterOssConfiguration.getOssStsUrl();
         mOSSEndPoint = flutterOssConfiguration.getBucketEndPoint();
+        if (mSTSAuthUrl == null) {
+            result.error(FLUTTER_ERROR_CODE, "STS Auth链接为空", null);
+            return;
+        }
         OSSAuthCredentialsProvider credentialsProvider = new OSSAuthCredentialsProvider(mSTSAuthUrl);
         // 配置类如果不设置，会有默认配置。
         ClientConfiguration conf = new ClientConfiguration();
-        conf.setConnectionTimeout(flutterOssConfiguration.getConnectionTimeout()); // 连接超时，默认15秒。
-        conf.setSocketTimeout(flutterOssConfiguration.getSocketTimeout()); // socket超时，默认15秒。
-        conf.setMaxConcurrentRequest(flutterOssConfiguration.getMaxConcurrentRequest()); // 最大并发请求数，默认5个。
-        conf.setMaxErrorRetry(flutterOssConfiguration.getMaxErrorRetry()); // 失败后最大重试次数，默认2次。
+        if (flutterOssConfiguration.getConnectionTimeout() != null) {
+            conf.setConnectionTimeout(flutterOssConfiguration.getConnectionTimeout()); // 连接超时，默认15秒。
+        }
+        if (flutterOssConfiguration.getSocketTimeout() != null) {
+            conf.setSocketTimeout(flutterOssConfiguration.getSocketTimeout()); // socket超时，默认15秒。
+        }
+        if (flutterOssConfiguration.getMaxConcurrentRequest() != null) {
+            conf.setMaxConcurrentRequest(flutterOssConfiguration.getMaxConcurrentRequest()); // 最大并发请求数，默认5个。
+        }
+        if (flutterOssConfiguration.getMaxErrorRetry() != null) {
+            conf.setMaxErrorRetry(flutterOssConfiguration.getMaxErrorRetry()); // 失败后最大重试次数，默认2次。
+        }
+        // 是否开启httpDns。
         conf.setHttpDnsEnable(flutterOssConfiguration.getHttpDnsEnable());
         if (flutterOssConfiguration.getUserAgentMark() != null) {
             conf.setUserAgentMark(flutterOssConfiguration.getUserAgentMark());

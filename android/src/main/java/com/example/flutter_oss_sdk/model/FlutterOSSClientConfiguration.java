@@ -8,7 +8,7 @@ public class FlutterOSSClientConfiguration {
     private String bucketEndPoint;
 
     ///设置是否开启DNS配置
-    private Boolean httpDnsEnable;
+    private Boolean httpDnsEnable = true;
 
     ///设置自定义user-agent
     private String userAgentMark;
