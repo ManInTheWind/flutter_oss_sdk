@@ -92,6 +92,9 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
         if (uploadModel.getContentType() != null) {
             metadata.setContentType(uploadModel.getContentType());
         }
+        if (uploadModel.getObjectMeta() != null) {
+            metadata.setUserMetadata(uploadModel.getObjectMeta());
+        }
 //        metadata.setContentType("application/octet-stream"); // 设置content-type。
         put.setMetadata(metadata);
         try {
@@ -141,6 +144,9 @@ public class FlutterOSSClient implements FlutterOSSDelegate {
                 metadata.setContentType(uploadModel.getContentType());
             }
             put.setMetadata(metadata);
+            if (uploadModel.getObjectMeta() != null) {
+                metadata.setUserMetadata(uploadModel.getObjectMeta());
+            }
             // 异步上传时可以设置进度回调。
             put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
                 @Override

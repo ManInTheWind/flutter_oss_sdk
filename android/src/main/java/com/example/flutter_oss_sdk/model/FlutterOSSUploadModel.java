@@ -18,6 +18,8 @@ public class FlutterOSSUploadModel {
     private String callbackBody;
     private Map<String, String> callbackVars;
 
+    private Map<String,String> objectMeta;
+
     private String contentType;
 
     public void setBucketName(String bucketName) {
@@ -98,5 +100,13 @@ public class FlutterOSSUploadModel {
 
     public void setContentType(String contentType) {
         this.contentType = contentType;
+    }
+
+    public Map<String, String> getObjectMeta() {
+        return objectMeta;
+    }
+
+    public void setObjectMeta(Map<String, String> objectMeta) {
+        this.objectMeta = objectMeta;
     }
 }

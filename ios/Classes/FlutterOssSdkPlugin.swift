@@ -92,6 +92,11 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         
         putRequest.objectKey = uploadModel.objectKey
         
+        // 可以在上传文件时设置文件元数据或者HTTP头部。
+        if let objectMeta = uploadModel.objectMeta{
+            putRequest.objectMeta = objectMeta
+        }
+ 
         if let contentType = uploadModel.contentType{
             putRequest.contentType = contentType
         }
@@ -159,25 +164,6 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
                 self.onPutObjectAsync(uploadModelList)
             }
         
-        
-        
-//        let dispatchGroup = DispatchGroup()
-//
-//        let dispatchQueue = DispatchQueue(label: "com.fluttercandies.uploadQueue",attributes: .concurrent)
-//
-//        for uploadModel in uploadModelList {
-//            dispatchGroup.enter()
-//            dispatchQueue.async {
-//                self.onPutObjectAsync(uploadModel)
-//                dispatchGroup.leave()
-//            }
-//
-//        }
-//
-//        dispatchGroup.wait()
-//
-//        print("All upload tasks are completed.")
-        
         result(true)
     }
     
@@ -187,6 +173,11 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         putRequest.bucketName = uploadModel.bucketName
         
         putRequest.objectKey = uploadModel.objectKey
+        
+        // 可以在上传文件时设置文件元数据或者HTTP头部。
+        if let objectMeta = uploadModel.objectMeta{
+            putRequest.objectMeta = objectMeta
+        }
         
         putRequest.uploadingFileURL = URL(fileURLWithPath: uploadModel.uploadFilePath)
         
@@ -287,6 +278,11 @@ public class FlutterOssSdkPlugin: NSObject, FlutterPlugin {
         putRequest.bucketName = uploadModel.bucketName
         
         putRequest.objectKey = uploadModel.objectKey
+        
+        // 可以在上传文件时设置文件元数据或者HTTP头部。
+        if let objectMeta = uploadModel.objectMeta{
+            putRequest.objectMeta = objectMeta
+        }
         
         putRequest.uploadingFileURL = URL(fileURLWithPath: uploadModel.uploadFilePath)
         

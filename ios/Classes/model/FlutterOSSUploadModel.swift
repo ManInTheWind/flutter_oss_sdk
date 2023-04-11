@@ -23,6 +23,7 @@ struct FlutterOSSUploadModel {
     var callbackBodyType: String?
     var callbackBody: String?
     var callbackVars: [String: String?]?
+    var objectMeta: [String: String]?
 
     init(arguments: [String: Any])  {
         bucketName =  arguments["bucketName"] as? String ?? ""
@@ -35,5 +36,6 @@ struct FlutterOSSUploadModel {
         callbackBodyType =  arguments["callbackBodyType"] as? String
         callbackBody =  arguments["callbackBody"] as? String
         callbackVars =  arguments["callbackVars"] as? [String: String?]
+        objectMeta =  arguments["objectMeta"] as? [String: String]
     }
 }
