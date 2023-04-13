@@ -22,6 +22,7 @@ class OssUploadResponseProcessModel extends OssUploadResponseModel {
 }
 
 class OssUploadResponseSuccessModel extends OssUploadResponseModel {
+  /// 上传成功的路径
   final String fileUrl;
 
   /// 只有设置了ServerCallback，该值才有数据。
